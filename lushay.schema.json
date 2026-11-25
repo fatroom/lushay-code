@@ -69,6 +69,11 @@
         "description": "Whether programming should be to flash or ram",
         "title": "Programming Mode"
       },
+      "outputPath": {
+        "type": "string",
+        "title": "Output Path",
+        "description": "Folder for generated files (relative to the project file). Defaults to the project file's folder"
+      },
       "baudRate": {
         "type": "number",
         "title": "Serial Baud Rate",

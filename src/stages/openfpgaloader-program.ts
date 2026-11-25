@@ -10,7 +10,7 @@ export class OpenFPGALoaderProgramStage extends ToolchainStage {
         const openFpgaLoaderPath = ToolchainStage.overrides['openFPGALoader'] || path.join(ToolchainStage.ossCadSuiteBinPath, 'openFPGALoader');
         const toolchain = boardToToolchain(this.projectFile.board);
         const extension = toolchain === ToolchainProject.APICULA ? '.fs' : toolchain === ToolchainProject.ICESTORM ? '.bin' : '.bit';
-        const inputPath = path.join(this.projectFile.basePath, this.projectFile.name + extension);
+        const inputPath = path.join(this.projectFile.outputPath, this.projectFile.name + extension);
 
         const programCommand = [
             openFpgaLoaderPath,

@@ -19,6 +19,8 @@ export interface ProjectFile {
     synthIce40Options: string[];
     synthEcp5Options: string[];
     basePath: string;
+    /** Folder for generated files. In the .lushay.json it is relative to the project file; after parsing it is the absolute path. */
+    outputPath: string;
     fileName: string;
     includedFilePaths: string[];
     board: string;
@@ -68,6 +70,7 @@ export async function parseProjectFile(logger?: Logger, selectedProject?: string
             constraintsFile: constraintsFiles[0].fsPath,
             programMode: 'flash',
             basePath: vscode.workspace.workspaceFolders[0].uri.fsPath,
+            outputPath: vscode.workspace.workspaceFolders[0].uri.fsPath,
             fileName: projectFolderName,
             includedFilePaths: [],
             board: defaultBoard,
@@ -104,6 +107,8 @@ export async function parseProjectFile(logger?: Logger, selectedProject?: string
 
         projectFile.fileName = projectFileName;
         projectFile.basePath = path.dirname(projectFilePath);
+        projectFile.outputPath = path.resolve(projectFile.basePath, projectFile.outputPath || '.');
+        fs.mkdirSync(projectFile.outputPath, { recursive: true });
 
         // backward compatability
         if (!projectFile.constraintsFile && (projectFile as any).constraintsFilePath) {

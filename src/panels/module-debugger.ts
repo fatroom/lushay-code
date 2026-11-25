@@ -30,6 +30,23 @@ type ModuleDebuggerResult = {
 
 const MODULE_DEBUGGER_DEBUG_ATTRIBUTE = "lc_debug";
 
+/**
+ * Location of the .dbgmodule file for a verilog source. It lives in the project's outputPath,
+ * mirroring the source's folder layout relative to the project. Falls back to sitting next
+ * to the source when there is no project or the source is outside the project folder.
+ */
+function getDebugModulePath(sourcePath: string, projectFile?: { basePath: string, outputPath: string }): string {
+    const nextToSource = sourcePath.replace(/\.v$/, '') + '.dbgmodule';
+    if (!projectFile) {
+        return nextToSource;
+    }
+    const relative = path.relative(projectFile.basePath, nextToSource);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+        return nextToSource;
+    }
+    return path.join(projectFile.outputPath, relative);
+}
+
 export class ModuleDebuggerWebviewContentProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'lushay-code-module-debugger-content';
     private _view?: vscode.WebviewView;
@@ -37,6 +54,7 @@ export class ModuleDebuggerWebviewContentProvider implements vscode.WebviewViewP
     public static selectedProject?: () => {name: string, path: string} | undefined;
     public static getOverridePaths?: () => Promise<Record<string, string>>;
     public static currentFile?: vscode.Uri;
+    private lastProjectFile?: { basePath: string, outputPath: string };
     private static _instance?: ModuleDebuggerWebviewContentProvider;
     private modulesInFile: Array<{ name: string; ports: Array<{ name: string; direction: string; size: number; }>; debug: Array<{ name: string; size: number; }>; }>;
 
@@ -169,8 +187,8 @@ export class ModuleDebuggerWebviewContentProvider implements vscode.WebviewViewP
         fs.rmSync(path.dirname(pathToFile) + "/___module_export.json");
 
         this.modulesInFile = modulesInFile;
-        const pathWithoutExtension = pathToFile.substring(0, pathToFile.length - 2);
-        const dModulePath = pathWithoutExtension + '.dbgmodule';
+        this.lastProjectFile = projectFile;
+        const dModulePath = getDebugModulePath(pathToFile, projectFile);
         let debugFile = {} as ModuleDebuggerResult;
         if (fs.existsSync(dModulePath)) {
             debugFile = JSON.parse(fs.readFileSync(dModulePath).toString());
@@ -322,8 +340,7 @@ export class ModuleDebuggerWebviewContentProvider implements vscode.WebviewViewP
         if (!currentFile) {
             return;
         }
-        const pathWithoutExtension = currentFile.fsPath.split('.').slice(0, -1).join('.');
-        const dModulePath = `${pathWithoutExtension}.dbgmodule`;
+        const dModulePath = getDebugModulePath(currentFile.fsPath, this.lastProjectFile);
         let fileContent = {} as ModuleDebuggerResult;
         if (fs.existsSync(dModulePath)) {
             fileContent = JSON.parse(fs.readFileSync(dModulePath).toString());
@@ -336,6 +353,7 @@ export class ModuleDebuggerWebviewContentProvider implements vscode.WebviewViewP
             inputs,
             cases
         };
+        fs.mkdirSync(path.dirname(dModulePath), { recursive: true });
         fs.writeFileSync(dModulePath, JSON.stringify(fileContent, null, 4));
     }
 

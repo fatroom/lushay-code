@@ -84,6 +84,7 @@ export interface ProjectFile {
     testBenches: string[] | 'all';
     nextPnrGowinOptions: string[];
     synthGowinOptions: string[];
+    outputPath: string;
     baudRate: number;
     board: string;
     skipCstChecking: boolean;
@@ -103,6 +104,7 @@ All fields are option and have default values as detailed below
 | testBenches | Paths to test benches relative to project file | all which means all `_tb.v` files |
 | nextPnrGowinOptions | Extra flags for the nextpnr-gowin stage | [] |
 | synthGowinOptions | Extra flags for the synth-gowin stage in yosys | [] |
+| outputPath | Folder for generated files (synthesis, PnR and bitstream output), relative to the project file. Created if missing | the project file's folder |
 | baudRate | Baud Rate for serial console | 115200 |
 | board | The FPGA board being used | tangnano9k |
 | skipCstChecking | Skip the prestage of making sure all ports are defined | false |
@@ -176,7 +178,7 @@ The other button on a single-bit line clears the row setting all time frames low
 
 For multi-bit rows you have a button to expand / contract the value to display the individual bits, and on the multi-bit row you will get the value of all bits together. You can double click any empty time frame on the multi-bit row to create a new value. Values can be dragged from each end to extend or shorten their length and you can double click a value box to open a text input where you can enter a new value in hex.
 
-Inputs will be persisted for each module and are stored in a `.dbgmodule` file next to the source verilog file, and you can clear all signals in the current module by using the "Clear All" button at the top.
+Inputs will be persisted for each module and are stored in a `.dbgmodule` file in the project's `outputPath` (mirroring the source folder layout; next to the source verilog file if `outputPath` is not set), and you can clear all signals in the current module by using the "Clear All" button at the top.
 
 ## Cloud Builds
 Cloud builds use our servers to synthesize and generate the bitsream for your project. Currently this is only supported for tang nano boards and the cloud will use the official Gowin EDA (educational edition) to synthesize your bitstream. This allows you to use features not yet covered by the open source toolchain / to compare the results from the opensource toolchain to the official toolchain.

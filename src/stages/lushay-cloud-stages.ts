@@ -299,8 +299,8 @@ export class SendToServerStage extends ToolchainStage {
                 family
             }
             await uploadContent(location, Buffer.from(JSON.stringify(projectContent)));
-            const destFileName = path.join(this.projectFile.basePath, `___tempbuild_1${this.projectFile.name}.json`);
-            const fsFileName = path.join(this.projectFile.basePath, `${this.projectFile.name}.fs`);
+            const destFileName = path.join(this.projectFile.outputPath, `___tempbuild_1${this.projectFile.name}.json`);
+            const fsFileName = path.join(this.projectFile.outputPath, `${this.projectFile.name}.fs`);
             await makeGetRequest(SERVER_URL + '/startBuild/' + signedUrl.number + '/' + signedUrl.uuid);
             ToolchainStage.logger.logToBoth(' Done');
             ToolchainStage.logger.writeToBoth('    Waiting for build to complete ');;

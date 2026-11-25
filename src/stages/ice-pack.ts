@@ -9,7 +9,7 @@ export class IcePackStage extends ToolchainStage {
             ToolchainStage.logger.logToBoth('    Error: no routed netlist file');
             return null;
         }
-        const outputPath = path.join(this.projectFile.basePath, this.projectFile.name + '.bin');
+        const outputPath = path.join(this.projectFile.outputPath, this.projectFile.name + '.bin');
 
         const bitstreamCommand = [
             icePackPath,
