@@ -9,7 +9,7 @@ export class EcpPackStage extends ToolchainStage {
             ToolchainStage.logger.logToBoth('    Error: no routed netlist file');
             return null;
         }
-        const outputPath = path.join(this.projectFile.basePath, this.projectFile.name + '.bit');
+        const outputPath = path.join(this.projectFile.outputPath, this.projectFile.name + '.bit');
         const bitstreamCommand = [  
             ecpPackPath,
             inputPath,

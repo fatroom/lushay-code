@@ -1,8 +1,8 @@
 {
   "name": "lushay-code",
-  "displayName": "Lushay Code",
+  "displayName": "Lushay Code (custom outputPath)",
   "description": "Open Source FPGA Toolchain using OSS-Cad-Suite",
-  "version": "0.0.21",
+  "version": "0.0.22-outputpath",
   "license": "MIT",
   "engines": {
     "vscode": "^1.72.0"

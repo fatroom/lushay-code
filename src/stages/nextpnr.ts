@@ -126,7 +126,7 @@ function createNextPnRStage(edition: NextPnREditions) {
                 return null;
             }
             const outputFileExtension = edition === NextPnREditions.GOWIN ? '.json' : edition === NextPnREditions.ICE40 ? '.asc' : '.conf';
-            const outputPath = path.join(this.projectFile.basePath, this.projectFile.name + '_pnr' + outputFileExtension);
+            const outputPath = path.join(this.projectFile.outputPath, this.projectFile.name + '_pnr' + outputFileExtension);
 
             this.filesCreated.push(outputPath);
             const pnrCommand = this.getCommand(inputPath, outputPath);
